@@ -1,0 +1,22 @@
+html, body {
+  font-size: 13px;
+}
+
+#template {
+  display: none;
+}
+
+.artist-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.artist-list > .artist-item {
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+}
+
+.artist-list > .artist-item > .artist-img-profile {
+  width: 150px;
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Melon Front</title>
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+  <h2>Artist List</h2>
+  <ul class="artist-list">
+    
+  </ul>
+  
+  <div id="template">
+    <!-- 리스트 아이템 템플릿 -->
+    <li id="artist-item-template" class="artist-item">
+      <img class="artist-img-profile" src="" alt="">
+      <div class="artist-name"></div>
+    </li>
+  </div>
+  
+  <script src="js/axios.js"></script>
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script>
+    axios.get('http://localhost:8000/api/artist/')
+      .then(function (response) {
+        // ul.artist-list
+        var artistListElement = $('.artist-list');
+        // 응답의 Artist 정보 목록
+        var artists = response.data.results;
+        // Aritst정보 목록을 순회
+        for (var i = 0; i < artists.length; i++) {
+          // 현재 Artist정보
+          var curArtist = artists[i];
+          // 현재 Artist정보를 담을 li.artist-item요소를 복사
+          var curArtistItemElement = $('#artist-item-template').clone();
+          // 복사한 아이템에서 .artist-name에 해당하는 속성의 text를 curArtist의 name값으로 설정
+          curArtistItemElement.find('.artist-name').text(curArtist.name);
+          curArtistItemElement.find('.artist-img-profile').attr('src', curArtist.img_profile);
+          // ul.artist-list에 복사한 li.artist-item요소를 가장 뒤에 삽입
+          artistListElement.append(curArtistItemElement);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    // 1. axios를 사용해서 ArtistList를 요청하기
+    // 2. 돌아온 응답 데이터의 'results'값을 순회하며 jQuery를 사용해 .artist-item을 
+    //    .artist-list의 내부에 추가
+  </script>
+</body>
+</html>
