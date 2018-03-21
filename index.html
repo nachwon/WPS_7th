@@ -1,31 +1,84 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Melon Front</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Melon Front</title>
 </head>
 <body>
-  <h1>Melon Front!</h1>
-  <a href="artist-list.html">Artist List</a>
-  
-  <script src="js/axios.js"></script>
-  <script src="js/jquery-3.3.1.min.js"></script>
-  <script>
+<h1>Melon Front!</h1>
+<a href="artist-list.html">Artist List</a>
+
+<form action="">
+    <input id="username" type="text" name="username">
+    <input id="password" type="password" name="password">
+    <input type="submit" onclick="sendAjax(event)">
+</form>
+
+<button onclick="getCookie('token')">get Cookie</button>
+
+<script src="js/axios.js"></script>
+<script src="js/jquery-3.3.1.min.js"></script>
+<script>
     // 1. AuthToken을 받아오는 JS함수를 구현
     // function getAuthToken (username, password) {}
     //   주어진 매개변수 username과 password를 axios로 전달하고
     //   돌아온 'token'값을 console.log에 출력
-    
+
+    function getAuthToken (username, password) {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8000/api/members/auth-token/",
+            data: {
+                "username": username,
+                "password": password
+            },
+            dataType: "json",
+            success: function(response) {
+                setCookie("token", response.token, 7)
+            }
+        });
+    }
+
+
     // 2. form#login을 구현
     //  username, password를 받는 input2개와
     //  submit역할을 하는 button
     // 해당 form에 'submit'이 실행되었을 때, form자체의 'submit'기능 대신
     //  jQuery를 사용해서 아래 getAuthToken()함수를 실행
-    
+
+    function sendAjax(e) {
+        e.preventDefault();
+        var username = $("#username").val();
+        var password = $("#password").val();
+        getAuthToken(username, password)
+    }
+
     // https://stackoverflow.com/a/24103596
     // 3. 위 링크를 참조해서 받아온 token값을 'token'쿠키 key에 7일후 만료되도록 저장
-  </script>
+
+    function setCookie(key, value, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + exdays*24*60*60*1000);
+        var exdate = d.toUTCString();
+        document.cookie = key + "=" + value + ";" + "expires=" + exdate + ";" + "path=/artist-list.html;"
+    }
+
+    function getCookie(key) {
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var cookie_list = decodedCookie.split("; ");
+        var target = key + "=";
+        var token = '';
+
+        $(cookie_list).each(function(index, item) {
+            if (item.indexOf(target) === 0) {
+                token = item.split("=")[1]
+            }
+        });
+
+        return token
+    }
+</script>
 </body>
 </html>
